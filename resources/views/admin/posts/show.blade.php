@@ -12,6 +12,7 @@
                 </div>
                 <dl>
                     <dt>Titolo</dt>
+                    {{-- <img src="{{ asset('storage' . )}}" alt=""> --}}
                     <dd>{{ $post->title }}</dd>
                     <dt>Slug</dt>
                     <dd>{{ $post->slug }}</dd>

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Post;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 class PostController extends Controller
 {
@@ -130,14 +131,27 @@ class PostController extends Controller
      */
     public function update(Request $request, $slug)
     {
+        
         $validatedData = $request->validate([
             "title"=>"required|min:10",
-            "content" => "required|min:10"
+            "content" => "required|min:10",
+            "cover_img"=>"nullable|image"
         ]);
+        
 
         $post = $this->findBySlug($slug);
 
+        //cover_img non è obbligatorio, di conseguenza dobbiamo controllare se il file è stato inviato dall'utente
+        if(key_exists("cover_img", $validatedData)){
+            // salvo il mio file se è stato caricato 
+            //con la variabile $coverImg riceviamo un link del file che stiamo caricando
+            $coverImg = Storage::put("/", $validatedData["cover_img"]);
+
+            $post->cover_img=$coverImg;
+        }
+
         $post->update($validatedData);
+
         return redirect()->route("admin.posts.show" , $post->slug);
 
     }
